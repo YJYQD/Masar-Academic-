@@ -1,0 +1,8 @@
+{
+  "name": "university/doctor-rating",
+  "description": "Doctor rating platform for university (local) - PHPMailer optional",
+  "require": {
+    "php": ">=7.4",
+    "phpmailer/phpmailer": "^6.6"
+  }
+}

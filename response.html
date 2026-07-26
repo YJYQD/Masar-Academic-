@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة جامعة جازان للإرشاد والتقييم الأكاديمي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+            <div class="hero__content">
+                <h1>منصة جامعة جازان للإرشاد والتقييم الأكاديمي</h1>
+                <p class="hero__text">شارك تجربتك الأكاديمية بوضوح واحترام، وساعد زملاءك على اختيار أفضل تجربة تعليمية.</p>
+                <div class="hero__actions">
+                                                        </div>
+                                    <p style="margin-top:12px;">مرحبًا، tester — <a href="logout.php">تسجيل الخروج</a></p>
+                            </div>
+        </header>
+
+        <section class="stats" aria-label="إحصائيات المنصة">
+            <article class="stat-card">
+                <h2>3</h2>
+                <p>دكتور معتمد</p>
+            </article>
+            <article class="stat-card">
+                <h2>0</h2>
+                <p>طلب بانتظار المراجعة</p>
+            </article>
+            <article class="stat-card">
+                <h2>0</h2>
+                <p>تقييم منشور</p>
+            </article>
+            <article class="stat-card">
+                <h2>3</h2>
+                <p>تقييمات معلّقة</p>
+            </article>
+            <article class="stat-card">
+                <h2>0</h2>
+                <p>الكلية الأكثر تقييماً</p>
+                <small>غير متوفر</small>
+            </article>
+        </section>
+
+        <!-- comparative analytics moved to admin.php only -->
+
+                    <section class="flash flash--success">
+                شكرًا لك، تم حفظ تقييمك بنجاح وبانتظار المراجعة.            </section>
+        
+        <section class="panel" id="add-doctor">
+            <h2>إضافة دكتور جديد</h2>
+            <p>سيتم نشر الاسم بعد مراجعة المسؤول للحفاظ على جودة المحتوى.</p>
+                        <form method="POST" class="form-grid">
+                <input type="hidden" name="csrf_token" value="fafaee7cd81aef6febb2bd8416fb6fb59391274455b29bb32c48c8ffe03f26f1">                <label>
+                    اسم الدكتور
+                    <input type="text" name="doc_name" placeholder="الاسم الثلاثي" required>
+                </label>
+
+                <label>
+                    الكلية
+                    <select name="college" id="colleges" required>
+                        <option value="">اختر الكلية</option>
+                                                    <option value="الهندسة وعلوم الحاسب">كلية الهندسة وعلوم الحاسب</option>
+                                                    <option value="الطب">كلية الطب</option>
+                                                    <option value="طب الأسنان">كلية طب الأسنان</option>
+                                                    <option value="الصيدلة">كلية الصيدلة</option>
+                                                    <option value="العلوم الطبية التطبيقية">كلية العلوم الطبية التطبيقية</option>
+                                                    <option value="التمريض">كلية التمريض</option>
+                                                    <option value="الصحة العامة">كلية الصحة العامة</option>
+                                                    <option value="العلوم">كلية العلوم</option>
+                                                    <option value="إدارة الأعمال">كلية إدارة الأعمال</option>
+                                                    <option value="الشريعة والقانون">كلية الشريعة والقانون</option>
+                                                    <option value="الآداب والعلوم الإنسانية">كلية الآداب والعلوم الإنسانية</option>
+                                                    <option value="التربية">كلية التربية</option>
+                                                    <option value="التصميم والعمارة">كلية التصميم والعمارة</option>
+                                                    <option value="الكلية التطبيقية">كلية الكلية التطبيقية</option>
+                                            </select>
+                </label>
+
+                <label>
+                    القسم
+                    <select name="department" id="depts" required>
+                        <option value="">اختر الكلية أولًا</option>
+                    </select>
+                </label>
+
+                <label>
+                    نوع الدكتور
+                    <select name="gender" required>
+                        <option value="">اختر النوع</option>
+                        <option value="male">دكتور</option>
+                        <option value="female">دكتورة</option>
+                    </select>
+                </label>
+
+                <label class="full-width">
+                    المواد التي يدرّسها
+                    <input type="text" name="subjects" placeholder="مثال: إدارة قواعد البيانات - برمجة ويب">
+                </label>
+
+                <button type="submit" name="add_doc" class="btn btn--primary full-width">إرسال للمراجعة</button>
+            </form>
+                    </section>
+
+        <section class="panel" id="search">
+            <h2>البحث عن دكتور</h2>
+            <form method="GET" class="search-form" id="live-search-form" data-current-department="">
+                <input type="text" name="q" id="search-input" value="" placeholder="ابحث باسم الدكتور/الدكتورة أو الكلية أو القسم">
+                <div class="search-hint">مثال: "أحمد العتيبي" أو ابحث بعبارة مثل "كلية الهندسة"</div>
+                <select name="gender" id="search-gender">
+                    <option value="">النوع: الكل</option>
+                    <option value="male" >دكتور</option>
+                    <option value="female" >دكتورة</option>
+                </select>
+                <select name="college" id="search-colleges">
+                    <option value="">الكلية: الكل</option>
+                                            <option value="الهندسة وعلوم الحاسب" >كلية الهندسة وعلوم الحاسب</option>
+                                            <option value="الطب" >كلية الطب</option>
+                                            <option value="طب الأسنان" >كلية طب الأسنان</option>
+                                            <option value="الصيدلة" >كلية الصيدلة</option>
+                                            <option value="العلوم الطبية التطبيقية" >كلية العلوم الطبية التطبيقية</option>
+                                            <option value="التمريض" >كلية التمريض</option>
+                                            <option value="الصحة العامة" >كلية الصحة العامة</option>
+                                            <option value="العلوم" >كلية العلوم</option>
+                                            <option value="إدارة الأعمال" >كلية إدارة الأعمال</option>
+                                            <option value="الشريعة والقانون" >كلية الشريعة والقانون</option>
+                                            <option value="الآداب والعلوم الإنسانية" >كلية الآداب والعلوم الإنسانية</option>
+                                            <option value="التربية" >كلية التربية</option>
+                                            <option value="التصميم والعمارة" >كلية التصميم والعمارة</option>
+                                            <option value="الكلية التطبيقية" >كلية الكلية التطبيقية</option>
+                                    </select>
+                <select name="department" id="search-depts">
+                    <option value="">القسم: الكل</option>
+                </select>
+                <button type="submit" class="btn btn--dark">بحث</button>
+            </form>
+        </section>
+
+        <section class="panel" id="results" data-live-search-root="1">
+            <h2>نتائج التقييمات</h2>
+            <div class="cards">
+                
+                                                        <article class="doctor-card">
+                        <div class="doctor-card__head">
+                            <div>
+                                <h3>د. اختبار <small class="doctor-badge">دكتور</small></h3>
+                                <p>كلية الطب - الطب والباطنة</p>
+                            </div>
+                            <div class="rating-pill">
+                                <strong>0.0</strong>
+                                <div class="rating-stars" aria-label="التقييم 0.0 من 5">
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                    </div>
+                                <span>من 5</span>
+                                <small>0 تقييم</small>
+                            </div>
+                        </div>
+
+                        <div class="doctor-card__meta">
+                            <span class="meta-chip meta-chip--highlight">
+                                <strong>0.0</strong>
+                                <span>متوسط التقييم</span>
+                            </span>
+                            <span class="meta-chip">
+                                <strong>0</strong>
+                                <span>تقييمات</span>
+                            </span>
+                            <span class="meta-chip">
+                                <strong>دكتور</strong>
+                                <span>النوع</span>
+                            </span>
+                        </div>
+
+                        
+                        <div class="reviews">
+                                                            <p class="empty small">لا توجد تقييمات لهذا الدكتور حتى الآن.</p>
+                            
+                                                    </div>
+
+                                                <form method="POST" class="review-form">
+                            <input type="hidden" name="csrf_token" value="fafaee7cd81aef6febb2bd8416fb6fb59391274455b29bb32c48c8ffe03f26f1">                            <input type="hidden" name="doc_id" value="3">
+
+                            <label>
+                                اسم الحساب
+                                <input type="text" value="tester" readonly>
+                            </label>
+
+                            <label>
+                                كود المادة
+                                <input type="text" name="course_code" placeholder="مثال: COMP-111" required>
+                            </label>
+
+                            <label>
+                                الفصل الدراسي
+                                <input type="text" name="semester" placeholder="مثال: الفصل الأول 1447هـ" required>
+                            </label>
+
+                            <div class="field-group">
+                                <span class="field-label">التقييم</span>
+                                <div class="star-rating" data-rating-group>
+                                    <input type="radio" id="rating-3-5" name="rating" value="5" required>
+                                    <label for="rating-3-5">★</label>
+                                    <input type="radio" id="rating-3-4" name="rating" value="4">
+                                    <label for="rating-3-4">★</label>
+                                    <input type="radio" id="rating-3-3" name="rating" value="3">
+                                    <label for="rating-3-3">★</label>
+                                    <input type="radio" id="rating-3-2" name="rating" value="2">
+                                    <label for="rating-3-2">★</label>
+                                    <input type="radio" id="rating-3-1" name="rating" value="1">
+                                    <label for="rating-3-1">★</label>
+                                </div>
+                            </div>
+
+                            <label class="full-width">
+                                التعليق
+                                <textarea name="comment" rows="3" placeholder="اكتب تقييمك بشكل محترم وموضوعي" required></textarea>
+                            </label>
+
+                            <input type="hidden" name="browser_fingerprint" data-fingerprint-field value="">
+
+                            <button type="submit" name="add_review" class="btn btn--accent full-width">إرسال التقييم</button>
+                        </form>
+                                            </article>
+                                                        <article class="doctor-card">
+                        <div class="doctor-card__head">
+                            <div>
+                                <h3>Ø¯. Ø³Ù„Ù…Ù‰ Ø§Ù„Ø­Ø±Ø¨ÙŠ <small class="doctor-badge">دكتورة</small></h3>
+                                <p>كلية Ø§Ù„Ù‡Ù†Ø¯Ø³Ø© ÙˆØ¹Ù„ÙˆÙ… Ø§Ù„Ø­Ø§Ø³Ø¨ - Ø¹Ù„ÙˆÙ… Ø§Ù„Ø­Ø§Ø³Ø¨</p>
+                            </div>
+                            <div class="rating-pill">
+                                <strong>0.0</strong>
+                                <div class="rating-stars" aria-label="التقييم 0.0 من 5">
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                    </div>
+                                <span>من 5</span>
+                                <small>0 تقييم</small>
+                            </div>
+                        </div>
+
+                        <div class="doctor-card__meta">
+                            <span class="meta-chip meta-chip--highlight">
+                                <strong>0.0</strong>
+                                <span>متوسط التقييم</span>
+                            </span>
+                            <span class="meta-chip">
+                                <strong>0</strong>
+                                <span>تقييمات</span>
+                            </span>
+                            <span class="meta-chip">
+                                <strong>دكتورة</strong>
+                                <span>النوع</span>
+                            </span>
+                        </div>
+
+                        
+                        <div class="reviews">
+                                                            <p class="empty small">لا توجد تقييمات لهذا الدكتور حتى الآن.</p>
+                            
+                                                    </div>
+
+                                                <form method="POST" class="review-form">
+                            <input type="hidden" name="csrf_token" value="fafaee7cd81aef6febb2bd8416fb6fb59391274455b29bb32c48c8ffe03f26f1">                            <input type="hidden" name="doc_id" value="2">
+
+                            <label>
+                                اسم الحساب
+                                <input type="text" value="tester" readonly>
+                            </label>
+
+                            <label>
+                                كود المادة
+                                <input type="text" name="course_code" placeholder="مثال: COMP-111" required>
+                            </label>
+
+                            <label>
+                                الفصل الدراسي
+                                <input type="text" name="semester" placeholder="مثال: الفصل الأول 1447هـ" required>
+                            </label>
+
+                            <div class="field-group">
+                                <span class="field-label">التقييم</span>
+                                <div class="star-rating" data-rating-group>
+                                    <input type="radio" id="rating-2-5" name="rating" value="5" required>
+                                    <label for="rating-2-5">★</label>
+                                    <input type="radio" id="rating-2-4" name="rating" value="4">
+                                    <label for="rating-2-4">★</label>
+                                    <input type="radio" id="rating-2-3" name="rating" value="3">
+                                    <label for="rating-2-3">★</label>
+                                    <input type="radio" id="rating-2-2" name="rating" value="2">
+                                    <label for="rating-2-2">★</label>
+                                    <input type="radio" id="rating-2-1" name="rating" value="1">
+                                    <label for="rating-2-1">★</label>
+                                </div>
+                            </div>
+
+                            <label class="full-width">
+                                التعليق
+                                <textarea name="comment" rows="3" placeholder="اكتب تقييمك بشكل محترم وموضوعي" required></textarea>
+                            </label>
+
+                            <input type="hidden" name="browser_fingerprint" data-fingerprint-field value="">
+
+                            <button type="submit" name="add_review" class="btn btn--accent full-width">إرسال التقييم</button>
+                        </form>
+                                            </article>
+                                                        <article class="doctor-card">
+                        <div class="doctor-card__head">
+                            <div>
+                                <h3>Ø¯. Ø£Ø­Ù…Ø¯ Ø¨Ù† Ø¹Ù„ÙŠ <small class="doctor-badge">دكتور</small></h3>
+                                <p>كلية Ø§Ù„Ø·Ø¨ - Ø§Ù„Ø·Ø¨ ÙˆØ§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø¹Ø§Ù…Ø©</p>
+                            </div>
+                            <div class="rating-pill">
+                                <strong>0.0</strong>
+                                <div class="rating-stars" aria-label="التقييم 0.0 من 5">
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                            <span class="rating-stars__star ">★</span>
+                                                                    </div>
+                                <span>من 5</span>
+                                <small>0 تقييم</small>
+                            </div>
+                        </div>
+
+                        <div class="doctor-card__meta">
+                            <span class="meta-chip meta-chip--highlight">
+                                <strong>0.0</strong>
+                                <span>متوسط التقييم</span>
+                            </span>
+                            <span class="meta-chip">
+                                <strong>0</strong>
+                                <span>تقييمات</span>
+                            </span>
+                            <span class="meta-chip">
+                                <strong>دكتور</strong>
+                                <span>النوع</span>
+                            </span>
+                        </div>
+
+                        
+                        <div class="reviews">
+                                                            <p class="empty small">لا توجد تقييمات لهذا الدكتور حتى الآن.</p>
+                            
+                                                    </div>
+
+                                                <form method="POST" class="review-form">
+                            <input type="hidden" name="csrf_token" value="fafaee7cd81aef6febb2bd8416fb6fb59391274455b29bb32c48c8ffe03f26f1">                            <input type="hidden" name="doc_id" value="1">
+
+                            <label>
+                                اسم الحساب
+                                <input type="text" value="tester" readonly>
+                            </label>
+
+                            <label>
+                                كود المادة
+                                <input type="text" name="course_code" placeholder="مثال: COMP-111" required>
+                            </label>
+
+                            <label>
+                                الفصل الدراسي
+                                <input type="text" name="semester" placeholder="مثال: الفصل الأول 1447هـ" required>
+                            </label>
+
+                            <div class="field-group">
+                                <span class="field-label">التقييم</span>
+                                <div class="star-rating" data-rating-group>
+                                    <input type="radio" id="rating-1-5" name="rating" value="5" required>
+                                    <label for="rating-1-5">★</label>
+                                    <input type="radio" id="rating-1-4" name="rating" value="4">
+                                    <label for="rating-1-4">★</label>
+                                    <input type="radio" id="rating-1-3" name="rating" value="3">
+                                    <label for="rating-1-3">★</label>
+                                    <input type="radio" id="rating-1-2" name="rating" value="2">
+                                    <label for="rating-1-2">★</label>
+                                    <input type="radio" id="rating-1-1" name="rating" value="1">
+                                    <label for="rating-1-1">★</label>
+                                </div>
+                            </div>
+
+                            <label class="full-width">
+                                التعليق
+                                <textarea name="comment" rows="3" placeholder="اكتب تقييمك بشكل محترم وموضوعي" required></textarea>
+                            </label>
+
+                            <input type="hidden" name="browser_fingerprint" data-fingerprint-field value="">
+
+                            <button type="submit" name="add_review" class="btn btn--accent full-width">إرسال التقييم</button>
+                        </form>
+                                            </article>
+                            </div>
+        </section>
+
+        <footer class="footer">
+            <p>جميع الحقوق محفوظة 2026</p>
+            <p>التجارب الأكاديمية بين طلاب جامعة جازان</p>
+        </footer>
+    </main>
+
+    <script>
+        window.departmentsMap = {"الهندسة وعلوم الحاسب":["علوم الحاسب","هندسة الحاسب والشبكات","نظم المعلومات","الهندسة الكهربائية","الهندسة الميكانيكية","الهندسة المدنية","الهندسة الكيميائية","الهندسة الصناعية"],"الطب":["الطب والجراحة العامة"],"طب الأسنان":["طب وجراحة الفم والأسنان"],"الصيدلة":["الصيدلة السريرية","العلوم الصيدلانية"],"العلوم الطبية التطبيقية":["تقنية المختبرات الطبية","العلاج الطبيعي","التغذية الإكلينيكية","الأشعة التشخيصية"],"التمريض":["التمريض"],"الصحة العامة":["الصحة العامة","الوبائيات","صحة البيئة","التثقيف الصحي"],"العلوم":["الرياضيات","الفيزياء","الكيمياء","الأحياء","الجيولوجيا"],"إدارة الأعمال":["المحاسبة","إدارة الأعمال","التسويق والتجارة الإلكترونية","التمويل والاستثمار","نظم المعلومات الإدارية","الاقتصاد"],"الشريعة والقانون":["الشريعة","القانون العام","القانون الخاص"],"الآداب والعلوم الإنسانية":["اللغة العربية وآدابها","اللغة الإنجليزية","الصحافة والإعلام","السياحة والآثار","المكتبات والمعلومات","العلوم الاجتماعية"],"التربية":["التربية الفنية","علم النفس","رياض الأطفال","التربية الخاصة","التربية البدنية"],"التصميم والعمارة":["العمارة","التصميم الداخلي","تصميم المنتجات","التصميم الجرافيكي","الفنون التطبيقية"],"الكلية التطبيقية":["برمجة ونظم المعلومات","المحاسبة والتمويل","إدارة المبيعات","إدارة المستودعات","السكرتارية الطبية","إدارة الفنادق"]};
+        window.csrfToken = "fafaee7cd81aef6febb2bd8416fb6fb59391274455b29bb32c48c8ffe03f26f1";
+        window.isAdmin = false;
+        window.adminNotificationsUrl = '';
+        window.isUser = true;
+        window.currentUserName = "tester";
+    </script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

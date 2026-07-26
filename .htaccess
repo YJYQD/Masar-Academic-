@@ -1,0 +1,32 @@
+Options -Indexes
+RewriteEngine On
+
+# Redirect direct .php requests to clean URLs
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php(?:\s|\?) [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# Friendly routes
+RewriteRule ^admin/?$ admin/index.php [L,NC]
+RewriteRule ^schedule/?$ schedule.php [L,NC]
+RewriteRule ^curriculum/?$ curriculum.php [L,NC]
+RewriteRule ^attendance/?$ attendance.php [L,NC]
+RewriteRule ^login/?$ login.php [L,NC]
+RewriteRule ^register/?$ register.php [L,NC]
+RewriteRule ^logout/?$ logout.php [L,NC]
+RewriteRule ^profile/?$ profile.php [L,NC]
+RewriteRule ^verify-otp/?$ verify_otp.php [L,NC]
+RewriteRule ^syllabus/?$ syllabus.php [L,NC]
+RewriteRule ^view-doctors/?$ view_doctors.php [L,NC]
+RewriteRule ^add-doctor/?$ add_doctor.php [L,NC]
+RewriteRule ^index/?$ / [R=301,L]
+
+# Serve extensionless URLs as PHP files when they exist
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+# Optional HTTPS redirect for production domain
+RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
