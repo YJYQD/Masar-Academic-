@@ -1,0 +1,12 @@
+.env
+errors.log
+sess_*
+__pycache__/
+# البيئة الافتراضية للبيثون
+.venv/
+
+# مجلدات وقواعد بيانات مؤقتة أو اختبارية
+tmp_*
+*.pyc
+bot.cpython-*.pyc
+settings.json

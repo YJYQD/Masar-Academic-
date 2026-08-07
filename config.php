@@ -8,7 +8,7 @@ define('DB_PORT', (int) (getenv('DB_PORT') ?: 3306));
 define('DB_SOCKET', getenv('DB_SOCKET') ?: '');
 define('DB_NAME', getenv('DB_NAME') ?: 'doctor_rating');
 define('DB_USER', getenv('DB_USER') ?: 'root');
-define('DB_PASS', getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: '');
+define('DB_PASS', getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: 'AASS11221LGG');
 define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
 
 // إعدادات الأمان للجلسة
