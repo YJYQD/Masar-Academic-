@@ -627,7 +627,36 @@ function db_fetch_count(mysqli $conn, string $sql, string $types = '', array $pa
     return 0;
 }
 
+function database_table_exists(mysqli $conn, string $table): bool
+{
+    $dbName = defined('DB_NAME') ? DB_NAME : '';
+    if ($dbName === '') {
+        return false;
+    }
+
+    $stmt = $conn->prepare('SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? LIMIT 1');
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param('ss', $dbName, $table);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $exists = (bool) $result->fetch_assoc();
+    $stmt->close();
+
+    return $exists;
+}
+
 function seed_platform_data(mysqli $conn): void {
+    $requiredTables = ['academic_colleges', 'academic_departments', 'subjects', 'doctors', 'reviews', 'curriculum', 'schedules'];
+    foreach ($requiredTables as $requiredTable) {
+        if (!database_table_exists($conn, $requiredTable)) {
+            log_error('Skipping seed_platform_data because table is missing: ' . $requiredTable);
+            return;
+        }
+    }
+
     $academicCollegeCount = db_fetch_count($conn, 'SELECT COUNT(*) AS total FROM academic_colleges');
     $subjectsCount = db_fetch_count($conn, 'SELECT COUNT(*) AS total FROM subjects');
     $curriculumCount = db_fetch_count($conn, 'SELECT COUNT(*) AS total FROM curriculum');

@@ -4,6 +4,9 @@ load_env_file();
 
 // إعدادات قاعدة البيانات — تفضيل رابط JawsDB من Heroku ثم متغيرات البيئة ثم القيم الافتراضية المحلية.
 $jawsdb_url = getenv('JAWSDB_URL');
+$app_env = strtolower(trim((string) (getenv('APP_ENV') ?: '')));
+$prefer_local_defaults = $jawsdb_url === false || $jawsdb_url === '';
+$prefer_local_defaults = $prefer_local_defaults && ($app_env === '' || in_array($app_env, ['local', 'development', 'dev'], true));
 if ($jawsdb_url) {
     $dbparts = parse_url($jawsdb_url);
     $db_host = $dbparts['host'] ?? '127.0.0.1';
@@ -12,12 +15,28 @@ if ($jawsdb_url) {
     $db_name = isset($dbparts['path']) ? ltrim($dbparts['path'], '/') : (getenv('DB_NAME') ?: 'doctor_rating');
     $db_port = isset($dbparts['port']) ? (int) $dbparts['port'] : 3306;
 } else {
-    $db_host = getenv('DB_HOST') ?: '127.0.0.1';
-    $db_port = (int) (getenv('DB_PORT') ?: 3306);
-    $db_socket = getenv('DB_SOCKET') ?: '';
-    $db_name = getenv('DB_NAME') ?: 'doctor_rating';
-    $db_user = getenv('DB_USER') ?: 'root';
-    $db_pass = getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: '';
+    $env_db_host = getenv('DB_HOST') ?: '';
+    $env_db_port = (int) (getenv('DB_PORT') ?: 3306);
+    $env_db_socket = getenv('DB_SOCKET') ?: '';
+    $env_db_name = getenv('DB_NAME') ?: '';
+    $env_db_user = getenv('DB_USER') ?: '';
+    $env_db_pass = getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: '';
+
+    if ($prefer_local_defaults) {
+        $db_host = '127.0.0.1';
+        $db_port = 3307;
+        $db_socket = '';
+        $db_name = 'doctor_rating';
+        $db_user = 'root';
+        $db_pass = '';
+    } else {
+        $db_host = $env_db_host ?: '127.0.0.1';
+        $db_port = $env_db_port ?: 3307;
+        $db_socket = $env_db_socket;
+        $db_name = $env_db_name ?: 'doctor_rating';
+        $db_user = $env_db_user ?: 'root';
+        $db_pass = $env_db_pass;
+    }
 }
 
 if (!defined('DB_HOST')) define('DB_HOST', $db_host);
