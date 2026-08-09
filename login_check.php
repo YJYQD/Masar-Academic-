@@ -16,7 +16,7 @@ function fail_login(string $reason, string $message): void
 {
     log_error('Login failure [' . $reason . '] session_id=' . session_id() . ' has_session_token=' . (empty($_SESSION['csrf_token']) ? 'no' : 'yes'));
     flash_error($message);
-    header('Location: login.php?login=' . urlencode($reason));
+    header('Location: /login.php?login=' . urlencode($reason));
     exit();
 }
 
@@ -164,7 +164,7 @@ if ($adminRow && password_verify($password, $adminRow['password_hash'])) {
     set_signed_auth_cookie('admin', $linkedUserId, (string) $displayUserName, time() + 86400);
 
     flash_success('مرحباً بك يا مهندس ' . $displayUserName . '، تم تسجيل دخولك بنجاح.');
-    header('Location: index.php');
+    header('Location: /index.php');
     exit();
 }
 
@@ -196,13 +196,13 @@ if ($row && password_verify($password, $row['password_hash'])) {
     set_signed_auth_cookie('user', (int) $row['id'], (string) ($row['username'] ?: 'مستخدم'), time() + 86400);
 
     flash_success('تم تسجيل الدخول بنجاح، مرحباً بك في المنصة.');
-    header('Location: index.php');
+    header('Location: /index.php');
     exit();
 }
 
 // ثالثاً: في حال الفشل التام (بيانات خاطئة)
 // نقوم بتخزين رسالة الخطأ في الفلاش ستيشن قبل إعادة التوجيه لكي تظهر فوق النموذج
 flash_error('اسم المستخدم أو كلمة المرور غير صحيحة، يرجى التأكد وإعادة المحاولة.');
-header('Location: login.php?login=failed');
+header('Location: /login.php?login=failed');
 exit();
 ?>

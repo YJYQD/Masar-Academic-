@@ -3,10 +3,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/inc/session_secure.php';
 require_once __DIR__ . '/inc/flash.php';
 
-$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-if ($basePath === '' || $basePath === '.') {
-    $basePath = '';
-}
+$basePath = '';
 
 if (empty($_SESSION['csrf_token'])) { 
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); 
@@ -64,7 +61,7 @@ unset($_SESSION['flash']);
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?php echo e($basePath . '/save_register.php'); ?>" class="auth-form-grid">
+        <form method="POST" action="/save_register.php" class="auth-form-grid">
             <?php echo csrf_field(); ?>
             <label>
                 اسم المستخدم

@@ -45,6 +45,6 @@ session_destroy();
 clear_signed_auth_cookie();
 
 // 5. التوجيه الفوري إلى صفحة تسجيل الدخول
-header('Location: login.php');
+header('Location: /login.php');
 exit();
 ?>

@@ -3,10 +3,7 @@ require_once __DIR__ . '/inc/session_secure.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/inc/flash.php';
 
-$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-if ($basePath === '' || $basePath === '.') {
-    $basePath = '';
-}
+$basePath = '';
 
 if (empty($_SESSION['csrf_token'])) { 
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); 
@@ -37,7 +34,7 @@ $loginState = $_GET['login'] ?? '';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo e($basePath . '/assets/css/style.css'); ?>">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <title>تسجيل الدخول - منصة مسار الأكاديمية</title>
 </head>
 <body class="auth-body">
@@ -77,7 +74,7 @@ $loginState = $_GET['login'] ?? '';
             <div class="flash flash--error">يرجى كتابة اسم المستخدم وكلمة المرور كاملة.</div>
         <?php endif; ?>
 
-        <form method="POST" action="<?php echo e($basePath . '/login_check.php'); ?>" class="auth-form-grid" autocomplete="on" novalidate>
+        <form method="POST" action="/login_check.php" class="auth-form-grid" autocomplete="on" novalidate>
             <?php echo csrf_field(); ?>
             <label>
                 اسم المستخدم
@@ -89,8 +86,8 @@ $loginState = $_GET['login'] ?? '';
             </label>
             <button type="submit" class="btn btn--primary full-width">دخول</button>
         </form>
-        <p class="auth-footer">لا تملك حساب؟ <a href="<?php echo e($basePath . '/register.php'); ?>">إنشاء حساب جديد</a></p>
-        <p class="auth-footer"><a href="<?php echo e($basePath . '/index.php'); ?>">العودة إلى القائمة الرئيسية</a></p>
+        <p class="auth-footer">لا تملك حساب؟ <a href="/register.php">إنشاء حساب جديد</a></p>
+        <p class="auth-footer"><a href="/index.php">العودة إلى القائمة الرئيسية</a></p>
     </section>
 </main>
 </body>

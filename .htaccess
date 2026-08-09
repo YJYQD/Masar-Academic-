@@ -1,10 +1,6 @@
 Options -Indexes
 RewriteEngine On
 
-# Redirect direct .php requests to clean URLs
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php(?:\s|\?) [NC]
-RewriteRule ^ %1 [R=301,L]
-
 # Friendly routes
 RewriteRule ^admin/?$ admin/index.php [L,NC]
 RewriteRule ^schedule/?$ schedule.php [L,NC]
