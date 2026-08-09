@@ -228,6 +228,20 @@ function ensure_schema_migrations(mysqli $conn): void {
         CONSTRAINT `fk_admins_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
 
+    ensure_db_table($conn, 'CREATE TABLE IF NOT EXISTS `audit_logs` (
+        `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `admin_id` INT UNSIGNED DEFAULT NULL,
+        `action` VARCHAR(100) NOT NULL,
+        `target_type` VARCHAR(100) DEFAULT NULL,
+        `target_id` INT UNSIGNED DEFAULT NULL,
+        `ip_address` VARCHAR(45) DEFAULT NULL,
+        `meta` JSON DEFAULT NULL,
+        `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        KEY `idx_audit_logs_admin` (`admin_id`),
+        CONSTRAINT `fk_audit_logs_admin` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE SET NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
+
     ensure_db_table($conn, 'CREATE TABLE IF NOT EXISTS `students` (
         `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         `full_name` VARCHAR(255) DEFAULT NULL,
