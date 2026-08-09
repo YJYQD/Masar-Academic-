@@ -585,7 +585,7 @@ if (isset($_GET['logout'])) {
 
     clear_signed_auth_cookie();
 
-    header('Location: login.php');
+    header('Location: /login.php');
     exit();
 }
 

@@ -17,7 +17,7 @@ include 'db.php';
 
 // جدار الحماية المشدد للوصول المطلق لصفحة الدخول دون انكسار مسارات
 if (empty($_SESSION['is_admin']) || !isset($_SESSION['admin_id'])) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit();
 }
 // إعدادات الأمان وتوليد الرمز تلقائياً في قمة الملف

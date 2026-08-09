@@ -12,13 +12,13 @@ register_shutdown_function('admin_handle_fatal_error');
 $authContext = current_auth_context();
 if ($authContext['role'] !== 'super' && $authContext['role'] !== 'college_admin') {
     http_response_code(403);
-    header('Location: index.php');
+    header('Location: /admin/index.php');
     exit();
 }
 
 // فقط طلبات POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: /admin/index.php');
     exit();
 }
 
@@ -36,7 +36,7 @@ if (!hash_equals(csrf_token(), $token)) {
         exit();
     }
     flash_error('انتهت صلاحية الجلسة الأمنية، يرجى إعادة المحاولة.');
-    header('Location: index.php');
+    header('Location: /admin/index.php');
     exit();
 }
 
@@ -51,7 +51,7 @@ function deny($msg = 'غير مصرح') {
         exit();
     }
     flash_error($msg);
-    header('Location: index.php');
+    header('Location: /admin/index.php');
     exit();
 }
 

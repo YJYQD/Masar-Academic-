@@ -10,7 +10,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-restrict_to_logged_in_users('login.php');
+restrict_to_logged_in_users('/login.php');
 $userId = current_authenticated_user_id();
 
 function resolve_schedule_access_context(): array
@@ -53,7 +53,7 @@ date_default_timezone_set(APP_TIMEZONE);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_schedule']) || isset($_POST['schedule_action']))) {
     if (!$canManageSchedule) {
         $_SESSION['flash'] = ['type' => 'error', 'text' => 'ليس لديك صلاحية تعديل الجدول الدراسي.'];
-        header('Location: schedule.php');
+        header('Location: /schedule.php');
         exit();
     }
 
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_schedule']) |
         }
     }
 
-    header('Location: schedule.php');
+    header('Location: /schedule.php');
     exit();
 }
 

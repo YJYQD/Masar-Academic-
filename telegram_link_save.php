@@ -6,12 +6,12 @@ require_once __DIR__ . '/inc/telegram_helpers.php';
 require_once __DIR__ . '/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: telegram_link.php');
+    header('Location: /telegram_link.php');
     exit();
 }
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit();
 }
 
@@ -19,7 +19,7 @@ $userId = (int) ($_POST['user_id'] ?? $_SESSION['user_id']);
 
 if ($userId <= 0) {
     flash_error('معرّف المستخدم غير صالح.');
-    header('Location: telegram_link.php');
+    header('Location: /telegram_link.php');
     exit();
 }
 
@@ -200,5 +200,5 @@ try {
     flash_error($e->getMessage() ?: 'تعذر إكمال الربط الآن.');
 }
 
-header('Location: telegram_link.php');
+header('Location: /telegram_link.php');
 exit();

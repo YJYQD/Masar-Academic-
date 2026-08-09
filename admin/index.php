@@ -9,11 +9,11 @@ require_once __DIR__ . '/../inc/flash.php';
 
 register_shutdown_function('admin_handle_fatal_error');
 
-restrict_to_admins('login.php');
+restrict_to_admins('/login.php');
 $authContext = current_auth_context();
 if ($authContext['role'] !== 'super' && $authContext['role'] !== 'college_admin') {
     http_response_code(403);
-    header('Location: ../login.php');
+    header('Location: /login.php');
     exit();
 }
 

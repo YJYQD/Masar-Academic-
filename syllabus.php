@@ -32,7 +32,7 @@ function normalize_syllabus_college(string $college): string
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$canManageSyllabus) {
         $_SESSION['flash'] = ['type' => 'error', 'text' => 'ليس لديك صلاحية تعديل الخطة الدراسية.'];
-        header('Location: syllabus.php');
+        header('Location: /syllabus.php');
         exit();
     }
     $deleteSubject = !empty($_POST['delete_subject']);
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $_SESSION['flash'] = ['type' => 'success', 'text' => 'تم إضافة المادة بنجاح وظهرت في خطة المسار.'];
     }
-    header('Location: syllabus.php');
+    header('Location: /syllabus.php');
     exit();
 }
 

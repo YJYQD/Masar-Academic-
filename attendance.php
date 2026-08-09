@@ -6,17 +6,17 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-restrict_to_logged_in_users('login.php');
+restrict_to_logged_in_users('/login.php');
 
 $userId = current_authenticated_user_id();
 if ($userId <= 0) {
     http_response_code(403);
-    header('Location: index.php?error=unauthorized');
+    header('Location: /index.php?error=unauthorized');
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Location: attendance.php');
+    header('Location: /attendance.php');
     exit();
 }
 

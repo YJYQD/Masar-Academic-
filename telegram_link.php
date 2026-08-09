@@ -12,7 +12,7 @@ if (!($conn instanceof mysqli)) {
 }
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit();
 }
 

@@ -113,7 +113,10 @@ if (!function_exists('require_admin_access')) {
         $context = current_auth_context();
         if ($context['role'] !== 'super' && $context['role'] !== 'college_admin') {
             set_auth_flash('لا توجد لديك صلاحية للوصول إلى لوحة الإدارة.', 'error');
-            $target = $redirectTo === 'login.php' || $redirectTo === '../login.php' ? 'index.php?error=unauthorized' : $redirectTo;
+            $target = $redirectTo === 'login.php' || $redirectTo === '../login.php' ? '/index.php?error=unauthorized' : $redirectTo;
+            if ($target !== '' && $target[0] !== '/') {
+                $target = '/' . ltrim($target, '/');
+            }
             if (!headers_sent()) {
                 header('Location: ' . $target);
             }
@@ -123,7 +126,7 @@ if (!function_exists('require_admin_access')) {
 }
 
 if (!function_exists('restrict_to_logged_in_users')) {
-    function restrict_to_logged_in_users(string $redirectTo = 'login.php'): void
+    function restrict_to_logged_in_users(string $redirectTo = '/login.php'): void
     {
         $context = current_auth_context();
         if ($context['user_id'] <= 0) {
@@ -131,6 +134,9 @@ if (!function_exists('restrict_to_logged_in_users')) {
             set_auth_flash('يجب تسجيل الدخول للوصول إلى هذه الصفحة.', 'error');
 
             if (!headers_sent()) {
+                if ($redirectTo !== '' && $redirectTo[0] !== '/') {
+                    $redirectTo = '/' . ltrim($redirectTo, '/');
+                }
                 header('Location: ' . $redirectTo);
             }
             exit();
@@ -139,13 +145,16 @@ if (!function_exists('restrict_to_logged_in_users')) {
 }
 
 if (!function_exists('restrict_to_admins')) {
-    function restrict_to_admins(string $redirectTo = 'login.php'): void
+    function restrict_to_admins(string $redirectTo = '/login.php'): void
     {
         $context = current_auth_context();
         if ($context['role'] !== 'super' && $context['role'] !== 'college_admin') {
             clear_auth_session();
             set_auth_flash('لا توجد لديك صلاحية للوصول إلى لوحة الإدارة.', 'error');
-            $target = $redirectTo === 'login.php' || $redirectTo === '../login.php' ? 'index.php?error=unauthorized' : $redirectTo;
+            $target = $redirectTo === 'login.php' || $redirectTo === '../login.php' ? '/index.php?error=unauthorized' : $redirectTo;
+            if ($target !== '' && $target[0] !== '/') {
+                $target = '/' . ltrim($target, '/');
+            }
             if (!headers_sent()) {
                 header('Location: ' . $target);
             }
