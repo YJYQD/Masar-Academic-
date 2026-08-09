@@ -2,13 +2,30 @@
 require_once __DIR__ . '/inc/env_loader.php';
 load_env_file();
 
-// إعدادات قاعدة البيانات — تفضيل متغيرات البيئة ثم القيم الافتراضية الآمنة.
-define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
-define('DB_PORT', (int) (getenv('DB_PORT') ?: 3306));
-define('DB_SOCKET', getenv('DB_SOCKET') ?: '');
-define('DB_NAME', getenv('DB_NAME') ?: 'doctor_rating');
-define('DB_USER', getenv('DB_USER') ?: 'root');
-define('DB_PASS', getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: 'AASS11221LGG');
+// إعدادات قاعدة البيانات — تفضيل رابط JawsDB من Heroku ثم متغيرات البيئة ثم القيم الافتراضية الآمنة.
+$jawsdb_url = getenv('JAWSDB_URL');
+if ($jawsdb_url) {
+    $dbparts = parse_url($jawsdb_url);
+    $host = $dbparts['host'] ?? '127.0.0.1';
+    $user = $dbparts['user'] ?? 'root';
+    $pass = $dbparts['pass'] ?? getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: 'AASS11221LGG';
+    $db   = isset($dbparts['path']) ? ltrim($dbparts['path'], '/') : (getenv('DB_NAME') ?: 'doctor_rating');
+    $port = isset($dbparts['port']) ? (int) $dbparts['port'] : 3306;
+
+    define('DB_HOST', $host);
+    define('DB_PORT', $port);
+    define('DB_SOCKET', getenv('DB_SOCKET') ?: '');
+    define('DB_NAME', $db);
+    define('DB_USER', $user);
+    define('DB_PASS', $pass);
+} else {
+    define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
+    define('DB_PORT', (int) (getenv('DB_PORT') ?: 3306));
+    define('DB_SOCKET', getenv('DB_SOCKET') ?: '');
+    define('DB_NAME', getenv('DB_NAME') ?: 'doctor_rating');
+    define('DB_USER', getenv('DB_USER') ?: 'root');
+    define('DB_PASS', getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: 'AASS11221LGG');
+}
 define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
 
 // إعدادات الأمان للجلسة
