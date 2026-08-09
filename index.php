@@ -390,6 +390,10 @@ function fetch_audit_logs(mysqli $conn, int $limit = 10, ?string $admin_college 
         $params[] = $admin_college;
     }
     $stmt = mysqli_prepare($conn, "SELECT a.action, a.target_type, a.target_id, a.ip_address, a.created_at, COALESCE(ad.username, 'غير معروف') AS admin_name FROM audit_logs a LEFT JOIN admins ad ON ad.id = a.admin_id {$where} ORDER BY a.id DESC LIMIT {$limit}");
+    if (!$stmt) {
+        log_error('Failed to prepare audit log query: ' . mysqli_error($conn));
+        return $logs;
+    }
     if ($types !== '') {
         bind_stmt_params($stmt, $types, $params);
     }
