@@ -261,9 +261,13 @@ function build_doctor_search_query(string $search_query, array $filters = []): a
 }
 
 if (!function_exists('bind_stmt_params')) {
-    function bind_stmt_params(mysqli_stmt $stmt, string $types, array $params): void
+    function bind_stmt_params(mysqli_stmt|false $stmt, string $types, array $params): void
     {
-        if ($types === '' || $params === []) {
+        if (!$stmt instanceof mysqli_stmt) {
+            return;
+        }
+
+        if ($types === '' || empty($params)) {
             return;
         }
 
@@ -385,15 +389,7 @@ function fetch_audit_logs(mysqli $conn, int $limit = 10, ?string $admin_college 
         $types = 's';
         $params[] = $admin_college;
     }
-    $stmt = mysqli_prepare(
-        $conn,
-        "SELECT a.action, a.target_type, a.target_id, a.ip_address, a.created_at, COALESCE(ad.username, 'غير معروف') AS admin_name
-         FROM audit_logs a
-         LEFT JOIN admins ad ON ad.id = a.admin_id
-         {$where}
-         ORDER BY a.id DESC
-         LIMIT {$limit}"
-    );
+    $stmt = mysqli_prepare($conn, "SELECT a.action, a.target_type, a.target_id, a.ip_address, a.created_at, COALESCE(ad.username, 'غير معروف') AS admin_name FROM audit_logs a LEFT JOIN admins ad ON ad.id = a.admin_id {$where} ORDER BY a.id DESC LIMIT {$limit}");
     if ($types !== '') {
         bind_stmt_params($stmt, $types, $params);
     }
@@ -417,6 +413,10 @@ function fetch_admin_notifications(mysqli $conn, ?string $admin_college = null):
 
     if (!empty($admin_college)) {
         $stmt_count = mysqli_prepare($conn, "SELECT COUNT(*) AS c FROM reviews r INNER JOIN doctors d ON d.id = r.doctor_id WHERE r.status = 'pending' AND d.college = ?");
+        if (!$stmt_count) {
+            return $data;
+        }
+
         mysqli_stmt_bind_param($stmt_count, 's', $admin_college);
         mysqli_stmt_execute($stmt_count);
         $res_count = mysqli_stmt_get_result($stmt_count);
@@ -433,7 +433,11 @@ function fetch_admin_notifications(mysqli $conn, ?string $admin_college = null):
              WHERE r.status = 'pending' AND d.college = ?
              ORDER BY r.id DESC
              LIMIT 5"
-         );
+        );
+        if (!$stmt) {
+            return $data;
+        }
+
         mysqli_stmt_bind_param($stmt, 's', $admin_college);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
@@ -453,6 +457,10 @@ function fetch_admin_notifications(mysqli $conn, ?string $admin_college = null):
              ORDER BY r.id DESC
              LIMIT 5"
         );
+        if (!$stmt) {
+            return $data;
+        }
+
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         while ($row = mysqli_fetch_assoc($result)) {
@@ -474,6 +482,15 @@ function build_search_payload(mysqli $conn, string $search_query): array
     $results = [];
 
     $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+        return [
+            'success' => true,
+            'query' => $search_query,
+            'count' => 0,
+            'results' => [],
+        ];
+    }
+
     bind_stmt_params($stmt, $types, $params);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -813,9 +830,14 @@ $search_filters = [
 [$approved_sql, $approved_types, $approved_params] = build_doctor_search_query($search_query, $search_filters);
 
 $approved_stmt = mysqli_prepare($conn, $approved_sql);
-bind_stmt_params($approved_stmt, $approved_types, $approved_params);
-mysqli_stmt_execute($approved_stmt);
-$approved_result = mysqli_stmt_get_result($approved_stmt);
+if ($approved_stmt instanceof mysqli_stmt) {
+    bind_stmt_params($approved_stmt, $approved_types, $approved_params);
+    mysqli_stmt_execute($approved_stmt);
+    $approved_result = mysqli_stmt_get_result($approved_stmt);
+} else {
+    log_error('Failed to prepare doctor search query: ' . mysqli_error($conn) . ' | SQL: ' . $approved_sql);
+    $approved_result = false;
+}
 
 $stats = [
     'approved' => 0,
@@ -858,7 +880,7 @@ $stats['top_college'] = $top_college;
 $stats['top_college_count'] = $top_college_count;
 
 $analytics = [];
-$analytics['average_rating'] = $approved_result && mysqli_num_rows($approved_result) > 0 ? round($stats['reviews'] > 0 ? ($stats['approved'] > 0 ? ($stats['approved'] * 4.5) / $stats['approved'] : 4.5) : 4.5, 1) : 0.0;
+$analytics['average_rating'] = ($approved_result instanceof mysqli_result && mysqli_num_rows($approved_result) > 0) ? round($stats['reviews'] > 0 ? ($stats['approved'] > 0 ? ($stats['approved'] * 4.5) / $stats['approved'] : 4.5) : 4.5, 1) : 0.0;
 $analytics['attendance_trend'] = 'مستقر';
 $analytics['top_subject'] = 'مقدمة في البرمجة';
 $analytics['active_students'] = max(1, (int) $stats['approved'] + 2);
@@ -1073,11 +1095,11 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['is_admin']) && !empty($_COOK
         <section class="panel" id="results" data-live-search-root="1">
             <h2>نتائج التقييمات</h2>
             <div class="cards">
-                <?php if (mysqli_num_rows($approved_result) === 0): ?>
+                <?php if (!($approved_result instanceof mysqli_result) || mysqli_num_rows($approved_result) === 0): ?>
                     <p class="empty">لا توجد نتائج حالياً. جرّب إضافة دكتور أو غيّر كلمات البحث.</p>
                 <?php endif; ?>
 
-                <?php while ($doc = mysqli_fetch_assoc($approved_result)): ?>
+                <?php while ($approved_result instanceof mysqli_result && ($doc = mysqli_fetch_assoc($approved_result))): ?>
                     <?php
                     $rating_distribution = fetch_review_distribution($conn, (int) $doc['id']);
                     $rounded_rating = (int) round((float) $doc['avg_rating']);
