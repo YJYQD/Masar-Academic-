@@ -2,31 +2,40 @@
 require_once __DIR__ . '/inc/env_loader.php';
 load_env_file();
 
-// إعدادات قاعدة البيانات — تفضيل رابط JawsDB من Heroku ثم متغيرات البيئة ثم القيم الافتراضية الآمنة.
+// إعدادات قاعدة البيانات — تفضيل رابط JawsDB من Heroku ثم متغيرات البيئة ثم القيم الافتراضية المحلية.
 $jawsdb_url = getenv('JAWSDB_URL');
 if ($jawsdb_url) {
     $dbparts = parse_url($jawsdb_url);
-    $host = $dbparts['host'] ?? '127.0.0.1';
-    $user = $dbparts['user'] ?? 'root';
-    $pass = $dbparts['pass'] ?? getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: 'AASS11221LGG';
-    $db   = isset($dbparts['path']) ? ltrim($dbparts['path'], '/') : (getenv('DB_NAME') ?: 'doctor_rating');
-    $port = isset($dbparts['port']) ? (int) $dbparts['port'] : 3306;
-
-    define('DB_HOST', $host);
-    define('DB_PORT', $port);
-    define('DB_SOCKET', getenv('DB_SOCKET') ?: '');
-    define('DB_NAME', $db);
-    define('DB_USER', $user);
-    define('DB_PASS', $pass);
+    $db_host = $dbparts['host'] ?? '127.0.0.1';
+    $db_user = $dbparts['user'] ?? 'root';
+    $db_pass = $dbparts['pass'] ?? (getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: '');
+    $db_name = isset($dbparts['path']) ? ltrim($dbparts['path'], '/') : (getenv('DB_NAME') ?: 'doctor_rating');
+    $db_port = isset($dbparts['port']) ? (int) $dbparts['port'] : 3306;
 } else {
-    define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
-    define('DB_PORT', (int) (getenv('DB_PORT') ?: 3306));
-    define('DB_SOCKET', getenv('DB_SOCKET') ?: '');
-    define('DB_NAME', getenv('DB_NAME') ?: 'doctor_rating');
-    define('DB_USER', getenv('DB_USER') ?: 'root');
-    define('DB_PASS', getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: 'AASS11221LGG');
+    $db_host = getenv('DB_HOST') ?: '127.0.0.1';
+    $db_port = (int) (getenv('DB_PORT') ?: 3306);
+    $db_socket = getenv('DB_SOCKET') ?: '';
+    $db_name = getenv('DB_NAME') ?: 'doctor_rating';
+    $db_user = getenv('DB_USER') ?: 'root';
+    $db_pass = getenv('DB_PASS') ?: getenv('DB_PASSWORD') ?: '';
 }
-define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
+
+if (!defined('DB_HOST')) define('DB_HOST', $db_host);
+if (!defined('DB_PORT')) define('DB_PORT', $db_port);
+if (!defined('DB_SOCKET')) define('DB_SOCKET', $db_socket ?? '');
+if (!defined('DB_NAME')) define('DB_NAME', $db_name);
+if (!defined('DB_USER')) define('DB_USER', $db_user);
+if (!defined('DB_PASS')) define('DB_PASS', $db_pass);
+if (!defined('DB_CHARSET')) define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
+
+// Backward compatibility for any legacy code that still reads variables.
+$DB_HOST = DB_HOST;
+$DB_PORT = DB_PORT;
+$DB_SOCKET = DB_SOCKET;
+$DB_NAME = DB_NAME;
+$DB_USER = DB_USER;
+$DB_PASS = DB_PASS;
+$DB_CHARSET = DB_CHARSET;
 
 // إعدادات الأمان للجلسة
 if (!defined('SESSION_COOKIE_SECURE')) define('SESSION_COOKIE_SECURE', getenv('SESSION_COOKIE_SECURE') === '1');
